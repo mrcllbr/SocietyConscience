@@ -7,8 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r}
-
-install_github("mrcllbr/SoCoTools")
+devtools::install_github("mrcllbr/SoCoTools")
 ```
 ## R Markdown
 
