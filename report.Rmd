@@ -5,41 +5,38 @@ output: html_document
 
 Motivación
 ------------
-El objetivo de esta práctica es conocer o intentar averiguar la conscienciación de las personas sobre los exploits que aparecen a diario en diversas plataformas. Para medir esta "conscienciacion" extraeremos datasets de [twitter](https://twitter.com/?lang=es) y de [ExploitDB](https://www.exploit-db.com/)
+El objetivo de esta práctica es conocer o intentar averiguar la conscienciación de las personas sobre los exploits que aparecen a diario en diversas plataformas. Para medir esta "conscienciacion" extraeremos datasets de [Twitter](https://twitter.com/?lang=es) y de [ExploitDB](https://www.exploit-db.com/)
 
 Obtención de datos - ExploitDB
 ------------------------------
 
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-<<<<<<< HEAD
 ```{r, include=TRUE, echo=FALSE}
-=======
-```{r, echo=FALSe,include=TRUE}
->>>>>>> f074eb6922085ddd8247fd48c0977cc76fb41df3
 devtools::install_github("mrcllbr/SoCoTools")
 ```
 
 ```{r,echo=FALSE}
-csv <- SoCoTools::get_exploitdb_All()
-exploits_platform<-SoCoTools::get_platform_stats(7,10,csv)
+
+exploits_platform<-SoCoTools::get_platform_stats()
 
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7dias)")
 ```
 
 ## ExploitDB Global
 ```{r,echo=FALSE}
-exploits_platform<-SoCoTools::get_platform_stats(Inf,10,csv)
+exploits_platform<-SoCoTools::get_platform_stats(Inf,10)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
 ```
 
 ```{r,echo=FALSE}
-exploits_type<-SoCoTools::get_type_stats(Inf,10,csv)
+exploits_type<-SoCoTools::get_type_stats(Inf,10)
 pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
 ```
 
-<<<<<<< HEAD
 
 Obtención de datos - Twitter
 ------------------------------
@@ -47,17 +44,6 @@ Obtención de datos - Twitter
 Análisis de resultados
 -------------------------------
 
-=======
-```{r,echo=FALSE}
-exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10,csv)
-pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
-```
-
-```{r,echo=FALSE}
-exploits_author<-SoCoTools::get_author_stats(Inf,10,csv)
-pie(exploits_author$n,labels = paste(exploits_author$author,exploits_author$percent,"%",sep=" "), col=rainbow(length(exploits_author$n)),main="Autores (All-Time)")
-```
->>>>>>> f074eb6922085ddd8247fd48c0977cc76fb41df3
 
 ## R Markdown
 
