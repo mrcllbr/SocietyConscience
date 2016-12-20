@@ -3,10 +3,17 @@ title: "Society Conscience"
 output: html_document
 ---
 
+Motivación
+------------
+El objetivo de esta práctica es conocer o intentar averiguar la conscienciación de las personas sobre los exploits que aparecen a diario en diversas plataformas. Para medir esta "conscienciacion" extraeremos datasets de [twitter](https://twitter.com/?lang=es) y de [ExploitDB](https://www.exploit-db.com/)
+
+Obtención de datos - ExploitDB
+------------------------------
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r, include=TRUE}
+```{r, include=TRUE, echo=FALSE}
 devtools::install_github("mrcllbr/SoCoTools")
 ```
 
@@ -28,6 +35,14 @@ exploits_type<-SoCoTools::get_type_stats(Inf,10)
 pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
 ```
 
+
+Obtención de datos - Twitter
+------------------------------
+
+Análisis de resultados
+-------------------------------
+
+
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
@@ -47,3 +62,6 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Conclusiones
+------------
