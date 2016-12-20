@@ -6,7 +6,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r, include=TRUE}
+```{r, echo=FALSe,include=TRUE}
 devtools::install_github("mrcllbr/SoCoTools")
 ```
 
