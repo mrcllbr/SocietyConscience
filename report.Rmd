@@ -1,12 +1,12 @@
 ---
-title: "report"
+title: "Society Conscience"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r}
+```{r, include=FALSE}
 devtools::install_github("mrcllbr/SoCoTools")
 ```
 ## R Markdown
