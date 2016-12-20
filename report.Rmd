@@ -12,7 +12,7 @@ devtools::install_github("mrcllbr/SoCoTools")
 
 ```{r}
 
-exploits_platform<-get_platform_stats()
+exploits_platform<-SoCoTools::get_platform_stats()
 
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7dias)")
 ```
