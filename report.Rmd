@@ -11,30 +11,30 @@ devtools::install_github("mrcllbr/SoCoTools")
 ```
 
 ```{r,echo=FALSE}
-
-exploits_platform<-SoCoTools::get_platform_stats()
+csv <- SoCoTools::get_exploitdb_All()
+exploits_platform<-SoCoTools::get_platform_stats(7,10,csv)
 
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7dias)")
 ```
 
 ## ExploitDB Global
 ```{r,echo=FALSE}
-exploits_platform<-SoCoTools::get_platform_stats(Inf,10)
+exploits_platform<-SoCoTools::get_platform_stats(Inf,10,csv)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
 ```
 
 ```{r,echo=FALSE}
-exploits_type<-SoCoTools::get_type_stats(Inf,10)
+exploits_type<-SoCoTools::get_type_stats(Inf,10,csv)
 pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
 ```
 
 ```{r,echo=FALSE}
-exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10)
+exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10,csv)
 pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
 ```
 
 ```{r,echo=FALSE}
-exploits_author<-SoCoTools::get_author_stats(Inf,10)
+exploits_author<-SoCoTools::get_author_stats(Inf,10,csv)
 pie(exploits_author$n,labels = paste(exploits_author$author,exploits_author$percent,"%",sep=" "), col=rainbow(length(exploits_author$n)),main="Autores (All-Time)")
 ```
 
