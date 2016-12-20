@@ -28,6 +28,16 @@ exploits_type<-SoCoTools::get_type_stats(Inf,10)
 pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
 ```
 
+```{r,echo=FALSE}
+exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10)
+pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
+```
+
+```{r,echo=FALSE}
+exploits_author<-SoCoTools::get_author_stats(Inf,10)
+pie(exploits_author$n,labels = paste(exploits_author$author,exploits_author$percent,"%",sep=" "), col=rainbow(length(exploits_author$n)),main="Autores (All-Time)")
+```
+
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
