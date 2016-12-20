@@ -6,16 +6,28 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r, include=FALSE}
+```{r, include=TRUE}
 devtools::install_github("mrcllbr/SoCoTools")
 ```
 
-```{r}
+```{r,echo=FALSE}
 
 exploits_platform<-SoCoTools::get_platform_stats()
 
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7dias)")
 ```
+
+## ExploitDB Global
+```{r,echo=FALSE}
+exploits_platform<-SoCoTools::get_platform_stats(Inf,10)
+pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
+```
+
+```{r,echo=FALSE}
+exploits_type<-SoCoTools::get_type_stats(Inf,10)
+pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
+```
+
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
