@@ -9,6 +9,12 @@ El objetivo de esta práctica es conocer o intentar averiguar la conscienciació
 
 Obtención de datos - ExploitDB
 ------------------------------
+El proyecto está compuesto por el proyecto principal, el cual llama a diferentes funciones para realizar y mostrar la correlación de los datos en el cual se basa este estudio, y un package, éste proporciona las funciones comentadas anteriormente, asi como su implementación y la obtención de los datos.
+
+En cuanto a los datos de exploitDB, nos nutrimos a base de un repositorio de Github. Éste pone a disposición de cualquier usuario un archivo csv con más de 37000 vulnerabilidades, que además es actualizado a diario.
+Cada vulnerabilidad nos proporciona información relevante como la id del exploit correspondiente en exploitDB, una descripción, la fecha de agregación a exploitDB, el autor, la plataforma a la cual afecta, el tipo y el subtipo. 
+
+La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello utilizamos 
 
 Obtenemos el fichero CSV mediante la función:
 
