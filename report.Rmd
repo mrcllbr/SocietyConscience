@@ -10,6 +10,13 @@ El objetivo de esta práctica es conocer o intentar averiguar la conscienciació
 Obtención de datos - ExploitDB
 ------------------------------
 
+Obtenemos el fichero CSV mediante la función:
+
+*get_exploitdb_All <- function() {
+  csv <- RCurl::getURL("https://raw.githubusercontent.com/offensive-security/exploit-database/master/files.csv")
+  db <- read.csv(text = csv,stringsAsFactors = F)
+  return(db)
+}*
 
 
 ```{r setup, include=FALSE}
@@ -21,24 +28,25 @@ devtools::install_github("mrcllbr/SoCoTools")
 
 ## ExploitDB 
 
-```{r,echo=FALSE}
+A continuación, se muestran gráficos de las vulnerabilidades:
+
+* Gráfico de vulnerabilidades según la plataforma en un periodo de 7 dias teniendo en cuenta la fecha actual.
+* Vulnerabilidades 
+* Gráfico de vulnerabilidades según el tipo de ataque (dos,remote..)
+
+```{r,echo=FALSE, fig.width=15}
 csv <- SoCoTools::get_exploitdb_All()
 exploits_platform<-SoCoTools::get_platform_stats(7,10,csv)
-
+par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7dias)")
-```
-
-```{r,echo=FALSE}
-exploits_platform<-SoCoTools::get_platform_stats(Inf,10,csv)
+exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE, fig.width=15}
 exploits_type<-SoCoTools::get_type_stats(Inf,10,csv)
+par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
 pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
-```
-
-```{r,echo=FALSE}
 exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10,csv)
 pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
 ```
