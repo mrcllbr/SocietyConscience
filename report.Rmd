@@ -29,7 +29,7 @@ pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platf
 ```
 
 ```{r,echo=FALSE}
-exploits_platform<-SoCoTools::get_platform_stats(Inf,10,csv)
+exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
 ```
 
