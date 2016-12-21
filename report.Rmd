@@ -14,8 +14,6 @@ El proyecto está compuesto por el proyecto principal, el cual llama a diferente
 En cuanto a los datos de exploitDB, nos nutrimos a base de un repositorio de Github. Éste pone a disposición de cualquier usuario un archivo csv con más de 37000 vulnerabilidades, que además es actualizado a diario.
 Cada vulnerabilidad nos proporciona información relevante como la id del exploit correspondiente en exploitDB, una descripción, la fecha de agregación a exploitDB, el autor, la plataforma a la cual afecta, el tipo y el subtipo. 
 
-La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello utilizamos 
-
 Obtenemos el fichero CSV mediante la función:
 
 *get_exploitdb_All <- function() {
@@ -23,6 +21,10 @@ Obtenemos el fichero CSV mediante la función:
   db <- read.csv(text = csv,stringsAsFactors = F)
   return(db)
 }*
+
+La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello utilizamos 
+
+
 
 
 ```{r setup, include=FALSE}
@@ -42,23 +44,27 @@ A continuación, se muestran gráficos de las vulnerabilidades:
 
 ```{r,echo=FALSE, fig.width=15}
 csv <- SoCoTools::get_exploitdb_All()
+
 exploits_platform<-SoCoTools::get_platform_stats(7,10,csv)
 par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7dias)")
-<<<<<<< HEAD
-```
 
-```{r,echo=FALSE}
-=======
->>>>>>> ab4461880000380e16a3dc31e0c7be669115d85e
 exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
 ```
 
 ```{r,echo=FALSE, fig.width=15}
-exploits_type<-SoCoTools::get_type_stats(Inf,10,csv)
+exploits_type<-SoCoTools::get_type_stats(7,10,csv)
 par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
+pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (7 días)")
+exploits_type<-SoCoTools::get_type_stats(Inf,10,csv)
 pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
+```
+
+```{r,echo=FALSE, fig.width=15}
+exploits_subtype<-SoCoTools::get_subtype_stats(7,10,csv)
+par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
+pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (7 días)")
 exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10,csv)
 pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
 ```
