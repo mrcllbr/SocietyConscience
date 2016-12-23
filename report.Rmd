@@ -3,84 +3,100 @@ title: "Society Conscience"
 output: html_document
 ---
 
-Motivación
-------------
-El objetivo de esta práctica es conocer o intentar averiguar la conscienciación de las personas sobre los exploits que aparecen a diario en diversas plataformas. Para medir esta "conscienciacion" extraeremos datasets de [Twitter](https://twitter.com/?lang=es) y de [ExploitDB](https://www.exploit-db.com/)
+# Resumen
 
-Obtención de datos - ExploitDB
-------------------------------
+A partir de los datos sacados de la web [ExploitDB](https://www.exploit-db.com/) y de [Twitter](https://twitter.com/?lang=es) vamos a realizar un análisis para responder las siguientes preguntas:
+
+* Són conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?
+* Se preocupan de buscar una solución?
+
 El proyecto está compuesto por el proyecto principal, el cual llama a diferentes funciones para realizar y mostrar la correlación de los datos en el cual se basa este estudio, y un package, éste proporciona las funciones comentadas anteriormente, asi como su implementación y la obtención de los datos.
 
-En cuanto a los datos de exploitDB, nos nutrimos a base de un repositorio de Github. Éste pone a disposición de cualquier usuario un archivo csv con más de 37000 vulnerabilidades, que además es actualizado a diario.
-Cada vulnerabilidad nos proporciona información relevante como la id del exploit correspondiente en exploitDB, una descripción, la fecha de agregación a exploitDB, el autor, la plataforma a la cual afecta, el tipo y el subtipo. 
+
+A continuación se exponen los resultados obtenidos de [ExploitDB](https://www.exploit-db.com/) y se hace una comparativa de los exploits y vulnerabiliadades de los últimos 7 días con los obtenidos a partir del 2000. El objetivo es contrastar si los datos de los últimos 7 días se pueden considerar una buena muestra.
+
+Después de la comparativa, se correlarán los exploits con los tweets de alrededor del mundo de la última semana. Se ha escogido este período de tiempo debido a que la API de [Twitter](https://twitter.com/?lang=es) està limitada.
+
+Por último, se sacan unas conclusiones para determinar si con los datos obtenidos y el estudio realizado ha sido suficiente para responder las preguntas planteadas.
+
+
+## ExploitDB
+
+### Obtención de datos
+
+Nos nutrimos a base de un repositorio de Github. Éste pone a disposición de cualquier usuario un archivo csv con más de 37000 vulnerabilidades, que además es actualizado a diario.
+Cada vulnerabilidad nos proporciona información relevante como la id del exploit correspondiente en exploitDB, una descripción, la fecha de agregación a exploitDB, el autor, la plataforma a la cual afecta, el tipo de vulnerabilidad y una descripción mas específica de este. 
 
 Obtenemos el fichero CSV mediante la función:
 
-*get_exploitdb_All <- function() {
+```{r, include=TRUE, echo=TRUE}
+get_exploitdb_All <- function() {
   csv <- RCurl::getURL("https://raw.githubusercontent.com/offensive-security/exploit-database/master/files.csv")
   db <- read.csv(text = csv,stringsAsFactors = F)
   return(db)
-}*
+}
+```
 
-La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello utilizamos 
+### Anàlisi comparativo
 
-
-
-
+```{r, include=FALSE, echo=FALSE}
+devtools::install_github("mrcllbr/SoCoTools", force=TRUE)
+csv <- SoCoTools::get_exploitdb_All()
+```
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r, include=TRUE, echo=FALSE}
-devtools::install_github("mrcllbr/SoCoTools")
-```
 
-## ExploitDB 
 
-A continuación, se muestran gráficos de las vulnerabilidades:
+##### Plataformas 
 
-* Gráfico de vulnerabilidades según la plataforma en un periodo de 7 dias teniendo en cuenta la fecha actual.
-* Vulnerabilidades 
-* Gráfico de vulnerabilidades según el tipo de ataque (dos,remote..)
+Si se analizan las dos gráficas, se puede observar claramente que con mucha diferencia las plataformas de PHP y Windows son las que mas exploits tienen. No obstante, los datos obtenidos de la última semana no es así. Aunque sigue predominando Windows, muy empatado con los otros sistemas operativos Linux i OS X, PHP no tiene tanto peso.
+
 
 ```{r,echo=FALSE, fig.width=15}
-csv <- SoCoTools::get_exploitdb_All()
-
 exploits_platform<-SoCoTools::get_platform_stats(7,10,csv)
 par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
-pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7dias)")
+pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7 días)")
 
 exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
 ```
 
+Por lo tanto, cuando se haga la correlación se debe tener en cuenta que las plataformas con las que se ha cruzado la información con Twitter, no se pueden considerar como un resultado absoluto, no se debería generalizar.
+
+
+##### Tipos de exploits
+
+En el caso de los exploits se ha visto que puede varíar mucho entre semanas debido a que muchas veces los tipos vienen en bloque. Es decir, dada una vulnerabilidad pueden salir exploits diferentes pero del mismo tipo. Por lo tanto, no se debería generalizar.
+
 ```{r,echo=FALSE, fig.width=15}
 exploits_type<-SoCoTools::get_type_stats(7,10,csv)
 par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
-pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (7 días)")
+pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Exploits (7 días)")
 exploits_type<-SoCoTools::get_type_stats(Inf,10,csv)
-pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Tipo de Exploits (All-Time)")
+pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Exploits (All-Time)")
 ```
+
+
+##### Descripción específica del tipo de vulnearabilidad
+
+Cada uno de los tipos de exploits especificados en el apartado anterior tiene una descripción más específica del la vulnerabilidad en cuestión. En este caso, es muy probable que los resultados sean diferentes entre si y por eso en la gráfica salen porcentages tan iguales. 
+Como dato curioso, SQL injection és el tipo de vulnerabilidad mas exploitada en los últimos 20 años.
 
 ```{r,echo=FALSE, fig.width=15}
 exploits_subtype<-SoCoTools::get_subtype_stats(7,10,csv)
-par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
 pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (7 días)")
+
 exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10,csv)
 pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
 ```
 
-```{r,echo=FALSE}
-exploits_author<-SoCoTools::get_author_stats(Inf,10,csv)
-pie(exploits_author$n,labels = paste(exploits_author$author,exploits_author$percent,"%",sep=" "), col=rainbow(length(exploits_author$n)),main="Autores (All-Time)")
-```
+
+# Twitter
+La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello utilizamos 
 
 
-
-Obtención de datos - Twitter
-------------------------------
-
-Análisis de resultados
--------------------------------
+# Análisis de resultados
 
 
 
