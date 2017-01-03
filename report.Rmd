@@ -91,10 +91,33 @@ exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10,csv)
 pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
 ```
 
-
 # Twitter
 La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello utilizamos 
 
+```{r, include=TRUE, echo=TRUE}
+#Obté dataframe amb exploits (tota la info)
+exploitsDB <- SoCoTools::get_exploitdb(7)
+
+#  Obté la data dels exploits
+date <- paste(exploitsDB$date, sep=" ")
+
+#n <- vapply(strsplit(tweet_search[2], "\\W+"), length, integer(1))
+
+# Obtenció del que s'ha de buscar
+tweet_search <- paste(exploitsDB$platform, exploitsDB$type ,exploitsDB$subtype, sep=" ")
+
+tweet_search <- gsub("[^[:alnum:][:blank:]+?&/\\-]", "", tweet_search)
+tweet_search <- gsub("[0-9]+","",tweet_search)
+
+tweet_search <- sub("/", " ",tweet_search) 
+tweet_search <- sub("  ", "",tweet_search)
+
+# En aquest punt tweet_search conté tots els valors a buscar sense caràcters especials i números
+
+# Si es vol busccar per hashtags executar les següents comandes
+tweet_search <- gsub(" ", " #", tweet_search)
+tweet_search <- paste("#", tweet_search, sep="")
+```
 
 # Análisis de resultados
 
