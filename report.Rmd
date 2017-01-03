@@ -93,7 +93,7 @@ pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$
 
 
 # Twitter
-La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello utilizamos 
+La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello obtenemos un json al mandar una query contra la api. Al obtener el json parseamos su contenido y con ello obtenemos un dataframe con los datos que utilizaremos como el nombre de usuario, la ubicación del usuario, la coordenadas geográficas, el texto publicado y la hora de la publicación.
 
 
 # Análisis de resultados
