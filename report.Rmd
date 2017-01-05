@@ -117,6 +117,11 @@ tweet_search <- sub("  ", "",tweet_search)
 # Si es vol busccar per hashtags executar les següents comandes
 tweet_search <- gsub(" ", " #", tweet_search)
 tweet_search <- paste("#", tweet_search, sep="")
+
+exploitsDB <- SoCoTools::get_exploitdb(7)
+tweet_search <- paste(exploitsDB$platform, exploitsDB$type , sep=" ")
+
+
 ```
 
 # Análisis de resultados
