@@ -70,7 +70,7 @@ Por lo tanto, cuando se haga la correlación se debe tener en cuenta que las pla
 A continuación podemos ver la actividad que ha havido en twitter en las últimas 24 horas de las plataformas más susceptibles a ataques
 
 ```{r, echo=FALSE, message=FALSE}
-#library("dplyr")
+library("dplyr")
 
 exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
 
@@ -159,6 +159,53 @@ tweet_search <- sub("  ", "",tweet_search)
 tweet_search <- gsub(" ", " #", tweet_search)
 tweet_search <- paste("#", tweet_search, sep="")
 
+```
+
+```{r,echo=FALSE, fig.width=15}
+exploitsDB<-SoCoTools::get_exploitdb(7)
+
+# Create vector "platform type"
+tweet_search <- paste(exploitsDB$platform, exploitsDB$type , sep=" ")
+
+# Delete duplicated elements
+tweet_search <- paste(unique(tweet_search), sep= ' ')
+
+# Create vector "#platform #type"
+tweet_search <- gsub(" ", " #", tweet_search)
+tweet_search <- paste("#", tweet_search, sep="")
+
+# Vector with number of tweets for each "#platform #type"
+num_tweets <- vector(mode="numeric", length=0)
+
+####### Set the parameters of the Twitter API call ######
+# Maximum number of tweets returned
+max = 100L
+# Date of the system
+d = as.Date(Sys.Date(), '%y-%m-%d')
+# Tweets searching start date
+start_date = d - 1
+# Tweets searching end date
+end_date = d
+
+
+# For each "#platform #type" search the tweets
+for(val in tweet_search){
+  # Query to the Twitter API
+  query = val
+  # API call
+  result <- SoCoTools::twitter_query(query, max, start_date, end_date)
+  # Count number of tweets
+  num <-length(result)
+  # Save the value                        (tramboliqueig!)
+  num_tweets <- append(num_tweets, num)
+}
+
+# Dataframe Platform + number tweets "#platform #type"
+data = data.frame(platform = tweet_search, num_tweets)
+data = dplyr::arrange(data, desc(num_tweets))
+
+require(graphics)
+barplot(data$num_tweets,names = data$platform,col=rainbow(length(data$num_tweets)), ylab = "Número de Tweets", xlab = "Valores Buscados", main = "Relacion entre las plataformas y los tipos de exploit")
 ```
 
 # Análisis de resultados
