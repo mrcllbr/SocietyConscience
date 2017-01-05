@@ -69,17 +69,16 @@ Por lo tanto, cuando se haga la correlación se debe tener en cuenta que las pla
 
 A continuación podemos ver la actividad que ha havido en twitter en las últimas 24 horas de las plataformas más susceptibles a ataques
 
-```{r,echo=FALSE,message=FALSE}
+```{r, echo=FALSE, message=FALSE}
 library("dplyr")
 
 exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
-print(list(exploits_platform$platform))
 
 max = 100L
 d = as.Date(Sys.Date(), '%y-%m-%d')
 start_date = d - 1
 end_date = d
-querys <- list('linux ubuntu', 'linux overflow', 'linux unity')
+querys <- paste(exploits_platform$platform, "vulnerability", sep=" ")
 
 first = TRUE
 plot = ''
