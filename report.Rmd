@@ -13,7 +13,7 @@ A partir de los datos sacados de la web [ExploitDB](https://www.exploit-db.com/)
 El proyecto está compuesto por el proyecto principal, el cual llama a diferentes funciones para realizar y mostrar la correlación de los datos en el cual se basa este estudio, y un package, éste proporciona las funciones comentadas anteriormente, asi como su implementación y la obtención de los datos.
 
 
-A continuación se exponen los resultados obtenidos de [ExploitDB](https://www.exploit-db.com/) y se hace una comparativa de los exploits y vulnerabiliadades de los últimos 7 días con los obtenidos a partir del 2000. El objetivo es contrastar si los datos de los últimos 7 días se pueden considerar una buena muestra.
+A continuación se exponen los resultados obtenidos  de [ExploitDB](https://www.exploit-db.com/) y se hace una comparativa de los exploits y vulnerabiliadades de los últimos 7 días con los obtenidos a partir del 2000. El objetivo es contrastar si los datos de los últimos 7 días se pueden considerar una buena muestra.
 
 Después de la comparativa, se correlarán los exploits con los tweets de alrededor del mundo de la última semana. Se ha escogido este período de tiempo debido a que la API de [Twitter](https://twitter.com/?lang=es) està limitada.
 
@@ -64,6 +64,48 @@ pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platf
 
 Por lo tanto, cuando se haga la correlación se debe tener en cuenta que las plataformas con las que se ha cruzado la información con Twitter, no se pueden considerar como un resultado absoluto, no se debería generalizar.
 
+
+##### Actividad en twitter
+
+A continuación podemos ver la actividad que ha havido en twitter en las últimas 24 horas de las plataformas más susceptibles a ataques
+
+```{r,echo=FALSE,message=FALSE}
+library("dplyr")
+
+exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
+print(list(exploits_platform$platform))
+
+max = 100L
+d = as.Date(Sys.Date(), '%y-%m-%d')
+start_date = d - 1
+end_date = d
+querys <- list('linux ubuntu', 'linux overflow', 'linux unity')
+
+first = TRUE
+plot = ''
+a = seq(0, 23, 1)
+for(query in querys) {
+  result <- SoCoTools::twitter_query(query, max, start_date, end_date)
+  split_result <- split(result, lubridate::hour(result$Date))
+  split_result = as.data.frame.matrix(t(sapply(X = split_result, FUN = nrow)))
+
+  b = rep(0, 24)
+  for(x in 1:length(split_result)) {
+    b[as.integer(names(split_result[x]))+1] = as.integer(split_result[1,x])
+  }
+
+  if(first) {
+    plot<-paste('p<-plotly::plot_ly(y=', toString(list(b)), ', x=a , type="scatter", mode="lines", name="', toString(query), '")')
+    first = FALSE
+  }
+  else {
+    plot<-paste(plot, ' %>% plotly::add_trace(y=', toString(list(b)), ', x=a, type="scatter", mode="lines", name="', toString(query), '")')
+  }
+}
+
+eval(parse(text=plot))
+p
+```
 
 ##### Tipos de exploits
 
@@ -117,6 +159,7 @@ tweet_search <- sub("  ", "",tweet_search)
 # Si es vol busccar per hashtags executar les següents comandes
 tweet_search <- gsub(" ", " #", tweet_search)
 tweet_search <- paste("#", tweet_search, sep="")
+
 ```
 
 # Análisis de resultados
