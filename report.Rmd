@@ -135,33 +135,25 @@ pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$
 # Twitter
 La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello obtenemos un json al mandar una query contra la api. Al obtener el json parseamos su contenido y con ello obtenemos un dataframe con los datos que utilizaremos como el nombre de usuario, la ubicación del usuario, la coordenadas geográficas, el texto publicado y la hora de la publicación.
 
-```{r, include=TRUE, echo=TRUE}
-#Obté dataframe amb exploits (tota la info)
-exploitsDB <- SoCoTools::get_exploitdb(7)
+```{r, echo=TRUE, eval=FALSE}
+tweets_raw <- RCurl::getForm(u, .params = args, crlf = TRUE)
+tweets_parsed <- gsub('[\r\n]', '', tweets_raw[1])
+tweets_json <- RJSONIO::fromJSON(tweets_parsed, simplify = TRUE)
+users <- sapply(tweets_json[['statuses']], function(x) x[['user']][['name']])
+locations <- sapply(tweets_json[['statuses']], function(x) x[['user']][['location']])
+geo <- as.data.frame.matrix(t(sapply(X = locations, FUN = geoCode)))
+tweets <- sapply(tweets_json[['statuses']], function(x) x[['text']])
+timestamps <- strptime(sapply(tweets_json[['statuses']], function(x) x[['created_at']]), '%a %b %d %H:%M:%S %z %Y')
+result <- data.frame(User = users, Location = locations, Location_detected = geo$V4, Latitude = geo$V1, Longitude = geo$V2, Tweet = tweets, Date = timestamps)
 
-#  Obté la data dels exploits
-date <- paste(exploitsDB$date, sep=" ")
+result <- dplyr::filter(result, Date >= strptime(s, '%Y-%m-%d'))
 
-#n <- vapply(strsplit(tweet_search[2], "\\W+"), length, integer(1))
-
-# Obtenció del que s'ha de buscar
-tweet_search <- paste(exploitsDB$platform, exploitsDB$type ,exploitsDB$subtype, sep=" ")
-
-tweet_search <- gsub("[^[:alnum:][:blank:]+?&/\\-]", "", tweet_search)
-tweet_search <- gsub("[0-9]+","",tweet_search)
-
-tweet_search <- sub("/", " ",tweet_search) 
-tweet_search <- sub("  ", "",tweet_search)
-
-# En aquest punt tweet_search conté tots els valors a buscar sense caràcters especials i números
-
-# Si es vol busccar per hashtags executar les següents comandes
-tweet_search <- gsub(" ", " #", tweet_search)
-tweet_search <- paste("#", tweet_search, sep="")
-
+return(result)
 ```
 
+
 # Análisis de resultados
+Se ha analizado cuantos tweets se han hecho en los últimos 7 días que tengan relación con la plataforma y tipo de exploit. En la siguiente tabla se muestran duplicadas para poderla relacionar mejor con las vulnerabilidades.
 
 ```{r,echo=FALSE, fig.width=15}
 exploitsDB <- SoCoTools::get_exploitdb(7)
@@ -184,6 +176,52 @@ vul<-paste("Vulnerabilidad",numVulnerabilidades, ":",tweet_search, sep=" ")
 vulnerabilities<-c(1:length(tweet_search))
 vulnerabilities <- paste(numVulnerabilidades, "vulnerabilidad", sep=" ")
 ```
+
+```{r,echo=FALSE, fig.width=15}
+# Create vector "platform type"
+tweet_search <- paste(exploitsDB$platform, exploitsDB$type , sep=" ")
+
+# Delete duplicated elements
+tweet_search <- paste(unique(tweet_search), sep= ' ')
+
+# Create vector "#platform #type"
+tweet_search <- gsub(" ", " #", tweet_search)
+tweet_search <- paste("#", tweet_search, sep="")
+
+# Vector with number of tweets for each "#platform #type"
+num_tweets <- vector(mode="numeric", length=0)
+
+####### Set the parameters of the Twitter API call ######
+# Maximum number of tweets returned
+max = 100L
+# Date of the system
+d = as.Date(Sys.Date(), '%y-%m-%d')
+# Tweets searching start date
+start_date = d - 1
+# Tweets searching end date
+end_date = d
+
+
+# For each "#platform #type" search the tweets
+for(val in tweet_search){
+  # Query to the Twitter API
+  query = val
+  # API call
+  result <- SoCoTools::twitter_query(query, max, start_date, end_date)
+  # Count number of tweets
+  num <-length(result)
+  # Save the value                        (tramboliqueig!)
+  num_tweets <- append(num_tweets, num)
+}
+
+# Dataframe Platform + number tweets "#platform #type"
+data = data.frame(platform = tweet_search, num_tweets)
+data = dplyr::arrange(data, desc(num_tweets))
+
+require(graphics)
+barplot(data$num_tweets,names = data$platform,col=rainbow(length(data$num_tweets)), ylab = "Número de Tweets", xlab = "Valores Buscados", main = "Relacion entre las plataformas y los tipos de exploit")
+```
+
 A continuación, se muestran las palabras correspondientes a las vulnerabilidades de los últimos 7 días y debajo la gráfica correspondiente al número de tweets realizado el primer dia (rojo), el segundo dia (verde) y el tercer dia (azul).
 
 
@@ -217,5 +255,3 @@ data=data.frame(vulnerabilidades,dias,numtweets)
 p <- ggplot(data,aes(fill=dias,y=numtweets,x=vulnerabilidades))
 p + geom_bar(position="dodge", stat="identity")
 ```
-
-
