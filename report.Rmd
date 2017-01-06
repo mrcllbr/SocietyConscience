@@ -1,6 +1,8 @@
 ---
 title: "Society Conscience"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 # Resumen
