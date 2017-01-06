@@ -255,3 +255,8 @@ p <- ggplot(data,aes(fill=dias,y=numtweets,x=vulnerabilidades))
 p + geom_bar(position="dodge", stat="identity")
 ```
 
+# Conclusión
+
+El hecho que la API de Twitter solo reporte 100 resultados en cada consulta a límitado mucho nuestro estudio teniendo que ajustar más nuestras búsquedas y esto ha podido repercutir en que haya tweets que no se contemplen en nuestro estudio, obteniendo así un resultado poco fiable.
+
+Si tuviéramos que contestar a nuestra pregunta **Son conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?** según el resultado de cruzar los datos de ExploitDB y Twitter, podríamos decir que no, ya que, aún siendo el límite de 100 resultados no hemos obtenido en ningún caso más de 80 resultados (teniendo en cuenta los resultados de esta última semana).  
