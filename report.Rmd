@@ -163,5 +163,43 @@ tweet_search <- paste("#", tweet_search, sep="")
 
 # Análisis de resultados
 
+```{r,echo=FALSE, fig.width=15}
+exploitsDB <- SoCoTools::get_exploitdb(7)
+date1 <- as.Date(paste(exploitsDB$date, sep=" "))
+tweet_search <- paste(exploitsDB$platform, exploitsDB$type ,exploitsDB$subtype, sep=" ")
+
+tweet_search <- gsub("[^[:alnum:][:blank:]+?&/\\-]", "", tweet_search)
+tweet_search <- gsub("[0-9]+","",tweet_search)
+
+tweet_search <- sub("/", " ",tweet_search) 
+tweet_search <- sub("  ", "",tweet_search)
+words<-gsub(" ", " OR ", tweet_search)
+numVulnerabilidades<-c(1:length(tweet_search))
+vul<-paste("Vulnerabilidad",numVulnerabilidades, ":",tweet_search, sep=" ")
+vulnerabilities<-c(1:length(tweet_search))
+vulnerabilities <- paste(numVulnerabilidades, "vuln.", sep=" ")
+```
+A continuación, se muestran las vulnerabilidades de los últimos 7 días.
+
+
+```{r,echo=FALSE, fig.width=15}
+vul
+firstday<-vector(,nrow(exploitsDB))
+secondday<-vector(,nrow(exploitsDB))
+thirdday<-vector(,nrow(exploitsDB))
+
+for (i in 1:nrow(exploitsDB)){firstday[i]<-nrow(SoCoTools::twitter_query(words[i],30L,date1[i],date1[i]))}
+for (i in 1:nrow(exploitsDB)){secondday[i]<-nrow(SoCoTools::twitter_query(words[i],30L,date1[i]+1,date1[i]+1))}
+for (i in 1:nrow(exploitsDB)){thirdday[i]<-nrow(SoCoTools::twitter_query(words[i],30L,date1[i]+2,date1[i]+2))}
+
+dias<-c(rep("1dia",length(tweet_search)),rep("2dia",length(tweet_search)),rep("3dia",length(tweet_search)))
+
+numtweets<-c(firstday,secondday,thirdday)
+vulnerabilidades <- c(rep(vulnerabilities,3))
+data=data.frame(vulnerabilidades,dias,numtweets)
+
+p <- ggplot(data,aes(fill=dias,y=numtweets,x=vulnerabilidades))
+p + geom_bar(position="dodge", stat="identity")
+```
 
 
