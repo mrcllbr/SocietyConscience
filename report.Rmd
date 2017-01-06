@@ -7,15 +7,15 @@ output: html_document
 
 A partir de los datos sacados de la web [ExploitDB](https://www.exploit-db.com/) y de [Twitter](https://twitter.com/?lang=es) vamos a realizar un análisis para responder las siguientes preguntas:
 
-* Són conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?
+* Son conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?
 * Se preocupan de buscar una solución?
 
-El proyecto está compuesto por el proyecto principal, el cual llama a diferentes funciones para realizar y mostrar la correlación de los datos en el cual se basa este estudio, y un package, éste proporciona las funciones comentadas anteriormente, asi como su implementación y la obtención de los datos.
+El proyecto está compuesto por el proyecto principal, el cual llama a diferentes funciones para realizar y mostrar la correlación de los datos en el cual se basa este estudio, y un package, éste proporciona las funciones comentadas anteriormente, así como su implementación y la obtención de los datos.
 
 
-A continuación se exponen los resultados obtenidos  de [ExploitDB](https://www.exploit-db.com/) y se hace una comparativa de los exploits y vulnerabiliadades de los últimos 7 días con los obtenidos a partir del 2000. El objetivo es contrastar si los datos de los últimos 7 días se pueden considerar una buena muestra.
+A continuación, se exponen los resultados obtenidos  de [ExploitDB](https://www.exploit-db.com/) y se hace una comparativa de los exploits y vulnerabiliadades de los últimos 7 días con los obtenidos a partir del año 2000. El objetivo es contrastar si los datos de los últimos 7 días se pueden considerar una buena muestra.
 
-Después de la comparativa, se correlarán los exploits con los tweets de alrededor del mundo de la última semana. Se ha escogido este período de tiempo debido a que la API de [Twitter](https://twitter.com/?lang=es) està limitada.
+Después de la comparativa, se correlarán los exploits con los tweets de alrededor del mundo de la última semana. Se ha escogido este período de tiempo debido a que la API de [Twitter](https://twitter.com/?lang=es) está limitada.
 
 Por último, se sacan unas conclusiones para determinar si con los datos obtenidos y el estudio realizado ha sido suficiente para responder las preguntas planteadas.
 
@@ -24,7 +24,7 @@ Por último, se sacan unas conclusiones para determinar si con los datos obtenid
 
 ### Obtención de datos
 
-Nos nutrimos a base de un repositorio de Github. Éste pone a disposición de cualquier usuario un archivo csv con más de 37000 vulnerabilidades, que además es actualizado a diario.
+Nos nutrimos a base de un repositorio de Github. Éste pone a disposición de cualquier usuario un archivo csv con más de 37000 vulnerabilidades que además, se actualiza a diario.
 Cada vulnerabilidad nos proporciona información relevante como la id del exploit correspondiente en exploitDB, una descripción, la fecha de agregación a exploitDB, el autor, la plataforma a la cual afecta, el tipo de vulnerabilidad y una descripción mas específica de este. 
 
 Obtenemos el fichero CSV mediante la función:
@@ -50,7 +50,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##### Plataformas 
 
-Si se analizan las dos gráficas, se puede observar claramente que con mucha diferencia las plataformas de PHP y Windows son las que mas exploits tienen. No obstante, los datos obtenidos de la última semana no es así. Aunque sigue predominando Windows, muy empatado con los otros sistemas operativos Linux i OS X, PHP no tiene tanto peso.
+Si se analizan las dos gráficas, se puede observar claramente que con mucha diferencia las plataformas de PHP y Windows son las que mas exploits tienen. No obstante, los datos obtenidos de la última semana no muestran este resultado. Aunque sigue predominando Windows, muy empatado con los otros sistemas operativos Linux y OS X, PHP no tiene tanto peso.
 
 
 ```{r,echo=FALSE, fig.width=15}
@@ -62,12 +62,12 @@ exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
 ```
 
-Por lo tanto, cuando se haga la correlación se debe tener en cuenta que las plataformas con las que se ha cruzado la información con Twitter, no se pueden considerar como un resultado absoluto, no se debería generalizar.
+Por lo tanto, cuando se haga la correlación se debe tener en cuenta que las plataformas con las que se ha cruzado la información con Twitter no se pueden considerar como un resultado absoluto, no se debería generalizar.
 
 
 ##### Actividad en twitter
 
-A continuación podemos ver la actividad que ha havido en twitter en las últimas 24 horas de las plataformas más susceptibles a ataques
+A continuación podemos ver la actividad que ha habido en twitter en las últimas 24 horas de las plataformas más susceptibles a ataques.
 
 ```{r, echo=FALSE, message=FALSE}
 library("dplyr")
@@ -121,8 +121,8 @@ pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",
 
 ##### Descripción específica del tipo de vulnearabilidad
 
-Cada uno de los tipos de exploits especificados en el apartado anterior tiene una descripción más específica del la vulnerabilidad en cuestión. En este caso, es muy probable que los resultados sean diferentes entre si y por eso en la gráfica salen porcentages tan iguales. 
-Como dato curioso, SQL injection és el tipo de vulnerabilidad mas exploitada en los últimos 20 años.
+Cada uno de los tipos de exploits especificados en el apartado anterior tiene una descripción más específica de la vulnerabilidad en cuestión. En este caso, es muy probable que los resultados sean diferentes entre si y por eso en la gráfica salen porcentajes tan iguales. 
+Como dato curioso, SQL injection és el tipo de vulnerabilidad mas explotada en los últimos 20 años.
 
 ```{r,echo=FALSE, fig.width=15}
 exploits_subtype<-SoCoTools::get_subtype_stats(7,10,csv)
@@ -135,16 +135,29 @@ pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$
 # Twitter
 La api de twitter  nos proporciona la información necesaria para el estudio que queremos realizar. Para ello obtenemos un json al mandar una query contra la api. Al obtener el json parseamos su contenido y con ello obtenemos un dataframe con los datos que utilizaremos como el nombre de usuario, la ubicación del usuario, la coordenadas geográficas, el texto publicado y la hora de la publicación.
 
-```{r, include=TRUE, echo=TRUE}
-#Obté dataframe amb exploits (tota la info)
+```{r, echo=TRUE, eval=FALSE}
+tweets_raw <- RCurl::getForm(u, .params = args, crlf = TRUE)
+tweets_parsed <- gsub('[\r\n]', '', tweets_raw[1])
+tweets_json <- RJSONIO::fromJSON(tweets_parsed, simplify = TRUE)
+users <- sapply(tweets_json[['statuses']], function(x) x[['user']][['name']])
+locations <- sapply(tweets_json[['statuses']], function(x) x[['user']][['location']])
+geo <- as.data.frame.matrix(t(sapply(X = locations, FUN = geoCode)))
+tweets <- sapply(tweets_json[['statuses']], function(x) x[['text']])
+timestamps <- strptime(sapply(tweets_json[['statuses']], function(x) x[['created_at']]), '%a %b %d %H:%M:%S %z %Y')
+result <- data.frame(User = users, Location = locations, Location_detected = geo$V4, Latitude = geo$V1, Longitude = geo$V2, Tweet = tweets, Date = timestamps)
+
+result <- dplyr::filter(result, Date >= strptime(s, '%Y-%m-%d'))
+
+return(result)
+```
+
+
+# Análisis de resultados
+Se ha analizado cuantos tweets se han hecho en los últimos 7 días que tengan relación con la plataforma y tipo de exploit. En la siguiente tabla se muestran duplicadas para poderla relacionar mejor con las vulnerabilidades.
+
+```{r,echo=FALSE, fig.width=15}
 exploitsDB <- SoCoTools::get_exploitdb(7)
-
-#  Obté la data dels exploits
-date <- paste(exploitsDB$date, sep=" ")
-
-#n <- vapply(strsplit(tweet_search[2], "\\W+"), length, integer(1))
-
-# Obtenció del que s'ha de buscar
+date1 <- as.Date(paste(exploitsDB$date, sep=" "))
 tweet_search <- paste(exploitsDB$platform, exploitsDB$type ,exploitsDB$subtype, sep=" ")
 
 tweet_search <- gsub("[^[:alnum:][:blank:]+?&/\\-]", "", tweet_search)
@@ -152,18 +165,19 @@ tweet_search <- gsub("[0-9]+","",tweet_search)
 
 tweet_search <- sub("/", " ",tweet_search) 
 tweet_search <- sub("  ", "",tweet_search)
+#separar palabras con OR para la búsqueda en twiter
 
-# En aquest punt tweet_search conté tots els valors a buscar sense caràcters especials i números
-
-# Si es vol busccar per hashtags executar les següents comandes
-tweet_search <- gsub(" ", " #", tweet_search)
-tweet_search <- paste("#", tweet_search, sep="")
-
+words<-gsub(" ", " OR ", tweet_search)
+words2<-exploitsDB$platform
+words3<-paste(words2, "vulnerability", sep=" ")
+words3
+numVulnerabilidades<-c(1:length(tweet_search))
+vul<-paste("Vulnerabilidad",numVulnerabilidades, ":",tweet_search, sep=" ")
+vulnerabilities<-c(1:length(tweet_search))
+vulnerabilities <- paste(numVulnerabilidades, "vulnerabilidad", sep=" ")
 ```
 
 ```{r,echo=FALSE, fig.width=15}
-exploitsDB<-SoCoTools::get_exploitdb(7)
-
 # Create vector "platform type"
 tweet_search <- paste(exploitsDB$platform, exploitsDB$type , sep=" ")
 
@@ -208,7 +222,36 @@ require(graphics)
 barplot(data$num_tweets,names = data$platform,col=rainbow(length(data$num_tweets)), ylab = "Número de Tweets", xlab = "Valores Buscados", main = "Relacion entre las plataformas y los tipos de exploit")
 ```
 
-# Análisis de resultados
+A continuación, se muestran las palabras correspondientes a las vulnerabilidades de los últimos 7 días y debajo la gráfica correspondiente al número de tweets realizado el primer dia (rojo), el segundo dia (verde) y el tercer dia (azul).
 
 
+```{r,echo=FALSE, fig.width=15, message=FALSE}
+library("ggplot2")
+tweet_search
 
+#Vectores que contendrán los números de tweets
+firstday<-vector(,nrow(exploitsDB))
+secondday<-vector(,nrow(exploitsDB))
+thirdday<-vector(,nrow(exploitsDB))
+
+#Primer dia
+for (i in 1:nrow(exploitsDB)){firstday[i]<-nrow(SoCoTools::twitter_query(words3[i],100L,date1[i],date1[i]))}
+
+#Segundo dia
+for (i in 1:nrow(exploitsDB)){secondday[i]<-nrow(SoCoTools::twitter_query(words3[i],100L,date1[i]+1,date1[i]+1))}
+
+#Tercer dia
+for (i in 1:nrow(exploitsDB)){thirdday[i]<-nrow(SoCoTools::twitter_query(words3[i],100L,date1[i]+2,date1[i]+2))}
+
+#Creación de gráfica
+
+dias<-c(rep("1dia",length(tweet_search)),rep("2dia",length(tweet_search)),rep("3dia",length(tweet_search)))
+
+
+numtweets<-c(firstday,secondday,thirdday)
+vulnerabilidades <- c(rep(vulnerabilities,3))
+data=data.frame(vulnerabilidades,dias,numtweets)
+
+p <- ggplot(data,aes(fill=dias,y=numtweets,x=vulnerabilidades))
+p + geom_bar(position="dodge", stat="identity")
+```
