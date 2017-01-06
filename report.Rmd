@@ -8,7 +8,6 @@ output: html_document
 A partir de los datos sacados de la web [ExploitDB](https://www.exploit-db.com/) y de [Twitter](https://twitter.com/?lang=es) vamos a realizar un análisis para responder las siguientes preguntas:
 
 * Son conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?
-* Se preocupan de buscar una solución?
 
 El proyecto está compuesto por el proyecto principal, el cual llama a diferentes funciones para realizar y mostrar la correlación de los datos en el cual se basa este estudio, y un package, éste proporciona las funciones comentadas anteriormente, así como su implementación y la obtención de los datos.
 
@@ -56,7 +55,7 @@ Si se analizan las dos gráficas, se puede observar claramente que con mucha dif
 ```{r,echo=FALSE, fig.width=15}
 exploits_platform<-SoCoTools::get_platform_stats(7,10,csv)
 par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
-pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (7 días)")
+pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (1 semana)")
 
 exploits_platform<-SoCoTools::get_platform_stats(Inf,7,csv)
 pie(exploits_platform$n,labels = paste(exploits_platform$platform,exploits_platform$percent,"%",sep=" "), col=rainbow(length(exploits_platform$n)),main="Plataformas (All-Time)")
@@ -113,7 +112,7 @@ En el caso de los exploits se ha visto que puede varíar mucho entre semanas deb
 ```{r,echo=FALSE, fig.width=15}
 exploits_type<-SoCoTools::get_type_stats(7,10,csv)
 par(mfrow=c(1,2),mar=c(1,0,1,0)) #top, left, bottom,right
-pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Exploits (7 días)")
+pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Exploits (1 semana)")
 exploits_type<-SoCoTools::get_type_stats(Inf,10,csv)
 pie(exploits_type$n,labels = paste(exploits_type$type,exploits_type$percent,"%",sep=" "), col=rainbow(length(exploits_type$n)),main="Exploits (All-Time)")
 ```
@@ -126,7 +125,7 @@ Como dato curioso, SQL injection és el tipo de vulnerabilidad mas explotada en 
 
 ```{r,echo=FALSE, fig.width=15}
 exploits_subtype<-SoCoTools::get_subtype_stats(7,10,csv)
-pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (7 días)")
+pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (1 semana)")
 
 exploits_subtype<-SoCoTools::get_subtype_stats(Inf,10,csv)
 pie(exploits_subtype$n,labels = paste(exploits_subtype$subtype,exploits_subtype$percent,"%",sep=" "), col=rainbow(length(exploits_subtype$n)),main="Subtipo de Exploits (All-Time)")
@@ -255,3 +254,12 @@ data=data.frame(vulnerabilidades,dias,numtweets)
 p <- ggplot(data,aes(fill=dias,y=numtweets,x=vulnerabilidades))
 p + geom_bar(position="dodge", stat="identity")
 ```
+
+
+# Conclusión
+
+Después de realizar el estudio, destacaríamos lo siguiente:
+
+El hecho que la API de Twitter solo reporte 100 resultados en cada consulta a límitado mucho nuestro estudio teniendo que ajustar más nuestras búsquedas y esto ha podido repercutir en que haya tweets que no se contemplen en nuestro estudio, obteniendo así un resultado poco fiable.
+
+Si tuviéramos que contestar a nuestra pregunta **Son conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?** según el resultado de cruzar los datos de ExploitDB y Twitter, podríamos decir que no, ya que, aún siendo el límite de 100 resultados no hemos obtenido en ningún caso más de 80 resultados (teniendo en cuenta los resultados de esta última semana).  
