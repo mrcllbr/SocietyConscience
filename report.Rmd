@@ -255,3 +255,8 @@ data=data.frame(vulnerabilidades,dias,numtweets)
 p <- ggplot(data,aes(fill=dias,y=numtweets,x=vulnerabilidades))
 p + geom_bar(position="dodge", stat="identity")
 ```
+
+# Conclusiones
+Debido a que la API de Twitter no permita obtener resultados más antiguos de 7 días, ha limitado mucho nuestro estdudio. No obstante, hemos obtenido unos resultados bastante interesantes.
+Por un lado, se han podido obtener exploits muy antiguos que han permitido realizar una buena comparación con los exploits de la última semana para saber si lso resultados se pueden generalizar o no.
+Por otro lado, al cruzar los exploits con Twitter, se ha podido observar que aunque se realizan algunos tweets que contienen la plataforma y el tipo de exploit, la gente no acostumbra a hablar de vulnerabilidades específicas por Twitter.
