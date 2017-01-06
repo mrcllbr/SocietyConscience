@@ -173,6 +173,8 @@ tweet_search <- gsub("[0-9]+","",tweet_search)
 
 tweet_search <- sub("/", " ",tweet_search) 
 tweet_search <- sub("  ", "",tweet_search)
+#separar palabras con OR para la búsqueda en twiter
+
 words<-gsub(" ", " OR ", tweet_search)
 numVulnerabilidades<-c(1:length(tweet_search))
 vul<-paste("Vulnerabilidad",numVulnerabilidades, ":",tweet_search, sep=" ")
@@ -184,15 +186,25 @@ A continuación, se muestran las vulnerabilidades de los últimos 7 días.
 
 ```{r,echo=FALSE, fig.width=15}
 vul
+
+#Vectores que contendrán los números de tweets
 firstday<-vector(,nrow(exploitsDB))
 secondday<-vector(,nrow(exploitsDB))
 thirdday<-vector(,nrow(exploitsDB))
 
+#Primer dia
 for (i in 1:nrow(exploitsDB)){firstday[i]<-nrow(SoCoTools::twitter_query(words[i],30L,date1[i],date1[i]))}
+
+#Segundo dia
 for (i in 1:nrow(exploitsDB)){secondday[i]<-nrow(SoCoTools::twitter_query(words[i],30L,date1[i]+1,date1[i]+1))}
+
+#Tercer dia
 for (i in 1:nrow(exploitsDB)){thirdday[i]<-nrow(SoCoTools::twitter_query(words[i],30L,date1[i]+2,date1[i]+2))}
 
+#Creación de gráfica
+
 dias<-c(rep("1dia",length(tweet_search)),rep("2dia",length(tweet_search)),rep("3dia",length(tweet_search)))
+
 
 numtweets<-c(firstday,secondday,thirdday)
 vulnerabilidades <- c(rep(vulnerabilities,3))
