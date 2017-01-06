@@ -7,7 +7,7 @@ output: html_document
 
 A partir de los datos sacados de la web [ExploitDB](https://www.exploit-db.com/) y de [Twitter](https://twitter.com/?lang=es) vamos a realizar un análisis para responder las siguientes preguntas:
 
-* Són conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?
+* Son conscientes los ciudadanos de las vulnerabilidades y exploits que salen a diario?
 * Se preocupan de buscar una solución?
 
 El proyecto está compuesto por el proyecto principal, el cual llama a diferentes funciones para realizar y mostrar la correlación de los datos en el cual se basa este estudio, y un package, éste proporciona las funciones comentadas anteriormente, así como su implementación y la obtención de los datos.
@@ -176,12 +176,15 @@ tweet_search <- sub("  ", "",tweet_search)
 #separar palabras con OR para la búsqueda en twiter
 
 words<-gsub(" ", " OR ", tweet_search)
+words2<-exploitsDB$platform
+words3<-paste(words2, "vulnerability", sep=" ")
+words3
 numVulnerabilidades<-c(1:length(tweet_search))
 vul<-paste("Vulnerabilidad",numVulnerabilidades, ":",tweet_search, sep=" ")
 vulnerabilities<-c(1:length(tweet_search))
 vulnerabilities <- paste(numVulnerabilidades, "vulnerabilidad", sep=" ")
 ```
-A continuación, se muestran las palabras correspondientes a las vulnerabilidades de los últimos 7 días.
+A continuación, se muestran las palabras correspondientes a las vulnerabilidades de los últimos 7 días y debajo la gráfica correspondiente al número de tweets realizado el primer dia (rojo), el segundo dia (verde) y el tercer dia (azul).
 
 
 ```{r,echo=FALSE, fig.width=15, message=FALSE}
@@ -194,13 +197,13 @@ secondday<-vector(,nrow(exploitsDB))
 thirdday<-vector(,nrow(exploitsDB))
 
 #Primer dia
-for (i in 1:nrow(exploitsDB)){firstday[i]<-nrow(SoCoTools::twitter_query(words[i],100L,date1[i],date1[i]))}
+for (i in 1:nrow(exploitsDB)){firstday[i]<-nrow(SoCoTools::twitter_query(words3[i],100L,date1[i],date1[i]))}
 
 #Segundo dia
-for (i in 1:nrow(exploitsDB)){secondday[i]<-nrow(SoCoTools::twitter_query(words[i],100L,date1[i]+1,date1[i]+1))}
+for (i in 1:nrow(exploitsDB)){secondday[i]<-nrow(SoCoTools::twitter_query(words3[i],100L,date1[i]+1,date1[i]+1))}
 
 #Tercer dia
-for (i in 1:nrow(exploitsDB)){thirdday[i]<-nrow(SoCoTools::twitter_query(words[i],100L,date1[i]+2,date1[i]+2))}
+for (i in 1:nrow(exploitsDB)){thirdday[i]<-nrow(SoCoTools::twitter_query(words3[i],100L,date1[i]+2,date1[i]+2))}
 
 #Creación de gráfica
 
