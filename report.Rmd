@@ -184,7 +184,8 @@ vulnerabilities <- paste(numVulnerabilidades, "vuln.", sep=" ")
 A continuación, se muestran las vulnerabilidades de los últimos 7 días.
 
 
-```{r,echo=FALSE, fig.width=15}
+```{r,echo=FALSE, fig.width=15, message=FALSE}
+library("ggplot2")
 vul
 
 #Vectores que contendrán los números de tweets
