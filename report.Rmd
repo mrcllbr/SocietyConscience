@@ -179,14 +179,14 @@ vulnerabilities <- paste(numVulnerabilidades, "vulnerabilidad", sep=" ")
 
 ```{r,echo=FALSE, fig.width=15}
 # Create vector "platform type"
-tweet_search <- paste(exploitsDB$platform, exploitsDB$type , sep=" ")
+tweet_search2 <- paste(exploitsDB$platform, exploitsDB$type , sep=" ")
 
 # Delete duplicated elements
-tweet_search <- paste(unique(tweet_search), sep= ' ')
+tweet_search2 <- paste(unique(tweet_search2), sep= ' ')
 
 # Create vector "#platform #type"
-tweet_search <- gsub(" ", " #", tweet_search)
-tweet_search <- paste("#", tweet_search, sep="")
+tweet_search2 <- gsub(" ", " #", tweet_search2)
+tweet_search2 <- paste("#", tweet_search2, sep="")
 
 # Vector with number of tweets for each "#platform #type"
 num_tweets <- vector(mode="numeric", length=0)
@@ -203,7 +203,7 @@ end_date = d
 
 
 # For each "#platform #type" search the tweets
-for(val in tweet_search){
+for(val in tweet_search2){
   # Query to the Twitter API
   query = val
   # API call
@@ -215,7 +215,7 @@ for(val in tweet_search){
 }
 
 # Dataframe Platform + number tweets "#platform #type"
-data = data.frame(platform = tweet_search, num_tweets)
+data = data.frame(platform = tweet_search2, num_tweets)
 data = dplyr::arrange(data, desc(num_tweets))
 
 require(graphics)
